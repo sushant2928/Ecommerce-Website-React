@@ -3,34 +3,25 @@ import Product from "./Product";
 
 const ProductsFeed = ({ products }) => {
   return (
-    <div className="products-feed flex flex-wrap w-full justify-center">
-      {products.map((product) => (
+    // <div className="flex flex-wrap justify-center">
+
+    <div className="grid grid-flow-row-dense md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ">
+      {products.slice(0, 4).map((product) => (
         <Product product={product} />
       ))}
-      {/* <Product
-        product={{
-          id: 1,
-          title: "iPhone 13",
-          price: 83000,
-          category: "Mobile",
-          description:
-            "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Explicabo labore similique, perferendis accusamus sequi voluptatem, quasi laudantium odio quos autem, nulla dicta assumenda repellendus",
-          image:
-            "https://images.unsplash.com/photo-1512054502232-10a0a035d672?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=580&q=80",
-        }}
+      <img
+        src="https://m.media-amazon.com/images/I/61p4xgMwlRL.jpg"
+        alt="Promotion-Banner"
+        className="md:col-span-full"
       />
-      <Product
-        product={{
-          id: 1,
-          title: "iPhone 13",
-          price: 83000,
-          category: "Mobile",
-          description:
-            "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Explicabo labore similique, perferendis accusamus sequi voluptatem, quasi laudantium odio quos autem, nulla dicta assumenda repellendus",
-          image:
-            "https://images.unsplash.com/photo-1512054502232-10a0a035d672?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=580&q=80",
-        }}
-      /> */}
+      <div className="md:col-span-2">
+        {products.slice(4, 5).map((product) => (
+          <Product product={product} />
+        ))}
+      </div>
+      {products.slice(5, products.length).map((product) => (
+        <Product product={product} />
+      ))}
     </div>
   );
 };
