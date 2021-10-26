@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { selectCartItems } from "../Redux/cartSlice";
 import CategoryBar from "./CategoryBar";
 
-const Navbar2 = ({ selectedCategory, setSelectedCategory }) => {
+const Navbar2 = () => {
   const { loginWithRedirect, logout, user } = useAuth0();
   const cartItems = useSelector(selectCartItems);
   const handleAuth = () => {
@@ -59,13 +59,10 @@ const Navbar2 = ({ selectedCategory, setSelectedCategory }) => {
             />
           </svg>
         </li> */}
-          <li className="cursor-pointer my-auto">
-            <button
-              className="font-semibold hidden md:inline"
-              onClick={handleAuth}
-            >
+          <li className="cursor-pointer my-auto" onClick={handleAuth}>
+            <div className="font-semibold hidden md:inline">
               {!user ? "Sign In" : user.given_name}
-            </button>
+            </div>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5 md:hidden"
@@ -105,10 +102,6 @@ const Navbar2 = ({ selectedCategory, setSelectedCategory }) => {
           </li>
         </ul>
       </div>
-      <CategoryBar
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-      />
     </>
   );
 };

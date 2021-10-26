@@ -7,21 +7,12 @@ import NavBarv2 from "./Components/NavBarv2";
 import CategoryBar from "./Components/CategoryBar";
 import { useState } from "react";
 function App() {
-  const [selectedCategory, setSelectedCategory] = useState("All");
-
   return (
     <Router>
       <div className="app">
         {/* <Navbar /> */}
-        <NavBarv2
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-        />
-        <Route
-          path="/"
-          render={() => <HomePage selectedCategory={selectedCategory} />}
-          exact
-        />
+        <NavBarv2 />
+        <Route path="/" render={() => <HomePage />} exact />
         <Route path="/cart" component={CartPage} exact />
         {/* <Route path="/Profile" component={ProfilePage} exact /> */}
         <Route />

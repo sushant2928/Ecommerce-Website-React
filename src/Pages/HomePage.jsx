@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import CategoryBar from "../Components/CategoryBar";
 import ProductsFeed from "../Components/ProductsFeed";
 
-const HomePage = ({ selectedCategory }) => {
+const HomePage = () => {
   const [products, setProducts] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
   useEffect(() => {
     fetch(
       `https://fakestoreapi.com/products/${
@@ -18,6 +20,10 @@ const HomePage = ({ selectedCategory }) => {
 
   return (
     <div>
+      <CategoryBar
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+      />
       <ProductsFeed products={products} />
     </div>
   );
