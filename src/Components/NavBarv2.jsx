@@ -3,15 +3,15 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectCartItems } from "../Redux/cartSlice";
-import CategoryBar from "./CategoryBar";
 
 const Navbar2 = () => {
-  const { loginWithRedirect, logout, user } = useAuth0();
+  const { loginWithPopup, logout, user, isAuthenticated } = useAuth0();
   const cartItems = useSelector(selectCartItems);
   const handleAuth = () => {
     console.log("inside Login function");
     console.log(user);
-    if (!user) loginWithRedirect().then((user) => console.log(user));
+    // if (!user) loginWithPopup().then((user) => console.log(user));
+    if (!isAuthenticated) loginWithPopup().then((user) => console.log(user));
     else logout();
   };
   useEffect(() => {
@@ -61,7 +61,7 @@ const Navbar2 = () => {
         </li> */}
           <li className="cursor-pointer my-auto" onClick={handleAuth}>
             <div className="font-semibold hidden md:inline">
-              {!user ? "Sign In" : user.given_name}
+              {!isAuthenticated ? "Sign In" : user.given_name}
             </div>
             <svg
               xmlns="http://www.w3.org/2000/svg"
