@@ -12,7 +12,7 @@ const Product = ({ product }) => {
   };
   return (
     // <div className="p-4 m-4 shadow-md rounded flex flex-col justify-between hover:shadow-xl">
-    <div className="p-5 m-5 shadow-md rounded flex flex-col justify-between align-middle hover:shadow-xl ">
+    <div className="p-5 m-5 shadow-md rounded flex flex-col justify-between align-middle hover:shadow-xl max-w-full ">
       <img
         src={image}
         alt="product_image"

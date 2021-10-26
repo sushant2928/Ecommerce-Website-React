@@ -5,7 +5,7 @@ const ProductsFeed = ({ products }) => {
   return (
     // <div className="flex flex-wrap justify-center">
 
-    <div className="grid grid-flow-row-dense md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ">
+    <div className="grid grid-flow-row-dense md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-full">
       {products.slice(0, 4).map((product) => (
         <Product product={product} key={product.id} />
       ))}
