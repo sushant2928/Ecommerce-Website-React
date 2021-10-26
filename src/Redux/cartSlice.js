@@ -1,7 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { calculateTotalPrice, findItemIndex } from "../utils";
 
 const initialState = {
   items: [],
+  totalPrice: 0,
 };
 
 export const cartSlice = createSlice({
@@ -9,16 +11,23 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action) => {
-      state.items = [...state.items, action.payload];
+      const index = findItemIndex(state, action);
+      if (index >= 0) {
+        let cartItems = [...state.items];
+        cartItems[index].quantity += 1;
+      } else state.items = [...state.items, { ...action.payload, quantity: 1 }];
+
+      state.totalPrice = calculateTotalPrice(state.items);
     },
     removeFromCart: (state, action) => {
-      const index = state.items.findIndex((item) => {
-        return item.id === action.payload.id;
-      });
-      console.log("index", index);
-      let newCartItems = [...state.items];
-      if (index >= 0) newCartItems.splice(index, 1);
-      state.items = [...newCartItems];
+      let cartItems = [...state.items];
+      const index = findItemIndex(state, action);
+      if (index >= 0) {
+        cartItems[index].quantity -= 1;
+        if (cartItems[index].quantity === 0) cartItems.splice(index, 1);
+      }
+      state.items = [...cartItems];
+      state.totalPrice = calculateTotalPrice(state.items);
     },
   },
 });
@@ -27,5 +36,6 @@ export const { addToCart, removeFromCart } = cartSlice.actions;
 
 // Selectors - This is how we pull information from the Global store slice
 export const selectCartItems = (state) => state.cart.items;
+export const selectTotalPrice = (state) => state.cart.totalPrice;
 
 export default cartSlice.reducer;

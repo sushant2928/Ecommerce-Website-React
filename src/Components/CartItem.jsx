@@ -26,7 +26,9 @@ const CartItem = ({ item }) => {
       <div className="col-span-3 mx-5 flex flex-col justify-center">
         <h2 className="pt-2 font-bold">{item.title}</h2>
         <p className="pt-1 text-sm line-clamp-3">{item.description}</p>
-        <p className="pt-1 font-semibold">Rs.{item.price}</p>
+        <p className="pt-1 font-semibold">
+          Rs.{item.price} x {item.quantity}
+        </p>
       </div>
       <div className="flex flex-col space-y-2 my-auto justify-center">
         <Button text="Add To Cart" clickHandler={addItemToCart} />
