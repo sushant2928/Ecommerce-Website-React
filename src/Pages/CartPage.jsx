@@ -1,73 +1,88 @@
-import { useAuth0 } from "@auth0/auth0-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CartItem from "../Components/CartItem";
+import { useHistory } from "react-router-dom";
 import {
-  addToCart,
+  deleteCart,
   selectCartItems,
   selectTotalPrice,
 } from "../Redux/cartSlice";
+import { selectIsUserLoggedIn } from "../Redux/userSlice";
+import "react-responsive-modal/styles.css";
+import { Modal } from "react-responsive-modal";
+// import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
 const CartPage = () => {
   const cartItems = useSelector(selectCartItems);
   const totalPrice = useSelector(selectTotalPrice);
-  const { user } = useAuth0();
+  const isUserLoggedIn = useSelector(selectIsUserLoggedIn);
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (user) {
-      // ------API DOESN'T WORK--------
-      // fetch('https://fakestoreapi.com/users',{
-      //       method:"POST",
-      //       body:JSON.stringify(
-      //           {
-      //               email:'John@gmail.com',
-      //               username:'johnd',
-      //               password:'m38rmF$',
-      //               name:{
-      //                   firstname:'John',
-      //                   lastname:'Doe'
-      //               },
-      //               address:{
-      //                   city:'kilcoole',
-      //                   street:'7835 new road',
-      //                   number:3,
-      //                   zipcode:'12926-3874',
-      //                   geolocation:{
-      //                       lat:'-37.3159',
-      //                       long:'81.1496'
-      //                   }
-      //               },
-      //               phone:'1-570-236-7033'
-      //           }
-      //       )
-      //   })
-      //       .then(res=>res.json())
-      //       .then(json=>console.log(json))
+  const history = useHistory();
+  const [orderPlaced, setOrderPlaced] = useState(false);
 
-      // GET CART ITEMS OF THE LOGGED IN USER
-      fetch("https://fakestoreapi.com/carts/user/2")
-        .then((res) => res.json())
-        .then((json) => {
-          if (json.length > 0) {
-            for (let product of json[0].products) {
-              fetch(`https://fakestoreapi.com/products/${product.productId}`)
-                .then((res) => res.json())
-                .then((json) => {
-                  dispatch(addToCart({ ...json, quantity: product.quantity }));
-                });
-            }
-          }
-        });
-    }
-  }, [user]);
+  const onOpenModal = () => setOrderPlaced(true);
+  const onCloseModal = () => {
+    setOrderPlaced(false);
+    dispatch(deleteCart());
+    history.replace("/");
+  };
+  //USE WHEN USING STRIPE
+  // const [disabled, setDisabled] = useState(false);
+  // const [error, setError] = useState(null);
+  // const [processing, setProcessing] = useState(false);
+  // const [succeeded, setSucceeded] = useState(false);
+  // const [clientSecret, setClientSecret] = useState(true);
+  // const stripe = useStripe();
+  // const elements = useElements();
+
+  // const handleChange = (event) => {
+  //   setDisabled(event.empty);
+  //   setError(event.error ? event.error.message : "");
+  // };
+  // const getClientSecret = async () => {
+  //   const response = await fetch(`/payments/create?total=${totalPrice * 100}`, {
+  //     method: "POST",
+  //     body: JSON.stringify({}),
+  //   });
+  //   setClientSecret(response.data.clientSecret);
+  // };
+  // const handleCheckout = async (event) => {
+  //   //getClientSecret
+  //   const response = await fetch(`/payments/create?total=${totalPrice * 100}`, {
+  //     method: "POST",
+  //     body: JSON.stringify({}),
+  //   });
+  //   setClientSecret(response.data.clientSecret);
+
+  //   setProcessing(true);
+
+  //   const payload = await stripe
+  //     .confirmCardPayment(clientSecret, {
+  //       card: elements.getElement(CardElement),
+  //     })
+  //     .then(({ paymentIntent }) => {
+  //       setSucceeded(true);
+  //       setError(null);
+  //       setProcessing(false);
+  //       history.replaceState("/");
+  //     });
+  // };
 
   const handleCheckout = () => {
-    if (user) {
-    } else {
-    }
+    onOpenModal();
   };
+
   return (
     <div className="lg:flex p-5">
+      <Modal open={orderPlaced} onClose={onCloseModal} center>
+        <div className="w-full h-max md:w-96 flex flex-col items-center justify-between p-0">
+          <h2 className="font-semibold text-2xl m-2 ml-0 border-b-2 w-full pb-1 text-center">
+            Thanks For Ordering
+          </h2>
+          <p className="text-lg">Order Placed Successfully</p>
+          <p className="font-black">Total Amount: {totalPrice}</p>;
+        </div>
+      </Modal>
       <div className="flex flex-col flex-grow flex-1">
         <h2 className="text-2xl border-b-2 pb-4 font-semibold">
           {cartItems.length > 0 ? "Shopping Cart" : "Your Cart is Empty"}
@@ -87,14 +102,22 @@ const CartPage = () => {
               </h2>
               <span className="font-semibold">Rs.{totalPrice}</span>
             </div>
+
+            {/* <CardElement className="mt-2" onChange={handleChange} /> */}
             <button
               onClick={handleCheckout}
-              disabled={!user}
-              className={`py-2 px-3 mt-2 bg-black text-white rounded ${
-                !user ? "bg-gray-500 cursor-not-allowed" : "hover:opacity-80"
+              disabled={!isUserLoggedIn}
+              // disabled={!isUserLoggedIn || processing || disabled || succeeded}
+              className={`py-2 px-3 mt-2 bg-black text-white font-semibold rounded ${
+                // {!isUserLoggedIn && !disabled}
+                !isUserLoggedIn
+                  ? "bg-gray-500 cursor-not-allowed"
+                  : "hover:opacity-80"
               }`}
             >
-              {user ? "Checkout" : "Sign in to checkout"}
+              {isUserLoggedIn ? "Buy Now" : "Sign in to checkout"}
+              {/* {processing && "Processing..."} */}
+              {/* {succeeded && "Payment Succeeded"} */}
             </button>
           </>
         )}

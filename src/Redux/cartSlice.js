@@ -29,10 +29,14 @@ export const cartSlice = createSlice({
       state.items = [...cartItems];
       state.totalPrice = calculateTotalPrice(state.items);
     },
+    deleteCart: (state) => {
+      state.items = [];
+      state.totalPrice = 0;
+    },
   },
 });
 
-export const { addToCart, removeFromCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, deleteCart } = cartSlice.actions;
 
 // Selectors - This is how we pull information from the Global store slice
 export const selectCartItems = (state) => state.cart.items;

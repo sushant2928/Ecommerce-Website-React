@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectCartItems } from "../Redux/cartSlice";
 import { selectIsUserLoggedIn, selectUser } from "../Redux/userSlice";
-import { logOutAll } from "../firebase";
+
 import { useHistory } from "react-router-dom";
 
 const Navbar2 = () => {
@@ -12,13 +12,15 @@ const Navbar2 = () => {
   const user = useSelector(selectUser);
   const history = useHistory();
   const handleAuthentication = () => {
-    if (isUserLoggedIn) logOutAll();
+    if (isUserLoggedIn) history.push("/profile");
     else history.push("/authentication");
   };
   return (
     <>
       <div className="flex justify-evenly align-middle bg-white py-2 px-5 shadow-md top-0 left-0 sticky z-10 max-w-full">
-        <h1 className="text-xl md:text-2xl font-bold w-full">E-Store</h1>
+        <Link className="text-xl md:text-2xl font-bold w-full" to="/">
+          <h1>E-Store</h1>
+        </Link>
         <ul className="flex justify-evenly align-middle w-full font-semibold text-base">
           <li className="my-auto">
             <Link to="/">

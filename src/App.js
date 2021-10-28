@@ -7,7 +7,12 @@ import Authentication from "./Pages/Authentication";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { addUser, removeUser } from "./Redux/userSlice";
 import { useDispatch } from "react-redux";
+import ProfilePage from "./Pages/ProfilePage";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 function App() {
+  const STRIPE_PUBLIC_KEY = "pk_test_fB3yEouOM4K1CJfj1HGRCqil00DdkiLl0b";
+  const promise = loadStripe(STRIPE_PUBLIC_KEY);
   const dispatch = useDispatch();
   onAuthStateChanged(getAuth(), (user) => {
     if (user) {
@@ -19,8 +24,8 @@ function App() {
 
       // ...
     } else {
+      // console.log(getAuth());
       dispatch(removeUser());
-
       // User is signed out
       // ...
     }
@@ -34,8 +39,14 @@ function App() {
 
         <Route path="/" render={() => <HomePage />} exact />
         <Route path="/authentication" render={() => <Authentication />} exact />
-        <Route path="/cart" component={CartPage} exact />
-        {/* <Route path="/Profile" component={ProfilePage} exact /> */}
+        <Route path="/cart" exact>
+          <Elements stripe={promise}>
+            <CartPage />
+          </Elements>
+        </Route>
+        <Route path="/profile" exact>
+          <ProfilePage />
+        </Route>
         <Route />
       </div>
     </Router>
