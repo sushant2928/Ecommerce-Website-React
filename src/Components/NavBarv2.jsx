@@ -1,23 +1,20 @@
 import React, { useEffect } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectCartItems } from "../Redux/cartSlice";
+import { selectIsUserLoggedIn, selectUser } from "../Redux/userSlice";
+import { logOutAll } from "../firebase";
+import { useHistory } from "react-router-dom";
 
 const Navbar2 = () => {
-  const { loginWithPopup, logout, user, isAuthenticated } = useAuth0();
   const cartItems = useSelector(selectCartItems);
-  const handleAuth = () => {
-    console.log("inside Login function");
-    console.log(user);
-    // if (!user) loginWithPopup().then((user) => console.log(user));
-    if (!isAuthenticated) loginWithPopup().then((user) => console.log(user));
-    else logout();
+  const isUserLoggedIn = useSelector(selectIsUserLoggedIn);
+  const user = useSelector(selectUser);
+  const history = useHistory();
+  const handleAuthentication = () => {
+    if (isUserLoggedIn) logOutAll();
+    else history.push("/authentication");
   };
-  useEffect(() => {
-    console.log(user);
-    console.log(cartItems);
-  }, [user, cartItems]);
   return (
     <>
       <div className="flex justify-evenly align-middle bg-white py-2 px-5 shadow-md top-0 left-0 sticky z-10 max-w-full">
@@ -59,9 +56,12 @@ const Navbar2 = () => {
             />
           </svg>
         </li> */}
-          <li className="cursor-pointer my-auto" onClick={handleAuth}>
-            <div className="font-semibold hidden md:inline">
-              {!isAuthenticated ? "Sign In" : user.given_name}
+          <li className="cursor-pointer my-auto">
+            <div
+              className="font-semibold hidden md:inline"
+              onClick={handleAuthentication}
+            >
+              {!isUserLoggedIn ? "Sign In" : user.displayName}
             </div>
             <svg
               xmlns="http://www.w3.org/2000/svg"
