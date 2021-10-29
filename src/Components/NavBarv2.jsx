@@ -71,6 +71,7 @@ const Navbar2 = () => {
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              onClick={handleAuthentication}
             >
               <path
                 strokeLinecap="round"
