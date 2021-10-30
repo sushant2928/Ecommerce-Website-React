@@ -27,7 +27,7 @@ const CartItem = ({ item }) => {
         <h2 className="pt-2 font-bold">{item.title}</h2>
         <p className="pt-1 text-sm line-clamp-3">{item.description}</p>
         <p className="pt-1 font-semibold">
-          Rs.{item.price} x {item.quantity}
+          ${item.price} x {item.quantity}
         </p>
       </div>
       <div className="flex flex-col space-y-2 my-auto justify-center">

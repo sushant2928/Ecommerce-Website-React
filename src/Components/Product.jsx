@@ -20,7 +20,7 @@ const Product = ({ product }) => {
       />
       <div className="flex flex-col justify-between">
         <h2 className="pt-2 font-bold">{title}</h2>
-        <p className="pt-1">Rs.{price}</p>
+        <p className="pt-1">${price}</p>
         <Button text="Add To Cart" clickHandler={addItemToCart} />
       </div>
     </div>

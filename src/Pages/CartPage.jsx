@@ -7,15 +7,17 @@ import {
   selectCartItems,
   selectTotalPrice,
 } from "../Redux/cartSlice";
-import { selectIsUserLoggedIn } from "../Redux/userSlice";
+import { selectIsUserLoggedIn, selectUser } from "../Redux/userSlice";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
+import StripeButton from "../Components/StripeButton";
 // import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
 const CartPage = () => {
   const cartItems = useSelector(selectCartItems);
   const totalPrice = useSelector(selectTotalPrice);
   const isUserLoggedIn = useSelector(selectIsUserLoggedIn);
+  const user = useSelector(selectUser);
   const dispatch = useDispatch();
   const history = useHistory();
   const [orderPlaced, setOrderPlaced] = useState(false);
@@ -26,50 +28,8 @@ const CartPage = () => {
     dispatch(deleteCart());
     history.replace("/");
   };
-  //USE WHEN USING STRIPE
-  // const [disabled, setDisabled] = useState(false);
-  // const [error, setError] = useState(null);
-  // const [processing, setProcessing] = useState(false);
-  // const [succeeded, setSucceeded] = useState(false);
-  // const [clientSecret, setClientSecret] = useState(true);
-  // const stripe = useStripe();
-  // const elements = useElements();
-
-  // const handleChange = (event) => {
-  //   setDisabled(event.empty);
-  //   setError(event.error ? event.error.message : "");
-  // };
-  // const getClientSecret = async () => {
-  //   const response = await fetch(`/payments/create?total=${totalPrice * 100}`, {
-  //     method: "POST",
-  //     body: JSON.stringify({}),
-  //   });
-  //   setClientSecret(response.data.clientSecret);
-  // };
-  // const handleCheckout = async (event) => {
-  //   //getClientSecret
-  //   const response = await fetch(`/payments/create?total=${totalPrice * 100}`, {
-  //     method: "POST",
-  //     body: JSON.stringify({}),
-  //   });
-  //   setClientSecret(response.data.clientSecret);
-
-  //   setProcessing(true);
-
-  //   const payload = await stripe
-  //     .confirmCardPayment(clientSecret, {
-  //       card: elements.getElement(CardElement),
-  //     })
-  //     .then(({ paymentIntent }) => {
-  //       setSucceeded(true);
-  //       setError(null);
-  //       setProcessing(false);
-  //       history.replaceState("/");
-  //     });
-  // };
-
-  const handleCheckout = () => {
-    onOpenModal();
+  const redirectToSignIn = () => {
+    history.replace("/authentication");
   };
 
   return (
@@ -80,7 +40,7 @@ const CartPage = () => {
             Thanks For Ordering
           </h2>
           <p className="text-lg">Order Placed Successfully</p>
-          <p className="font-black">Total Amount: {totalPrice}</p>;
+          <p className="font-black">Total Amount: ${totalPrice}</p>;
         </div>
       </Modal>
       <div className="flex flex-col flex-grow flex-1">
@@ -100,25 +60,34 @@ const CartPage = () => {
               <h2 className="font-semibold">
                 Subtotal [{cartItems.length} items]:
               </h2>
-              <span className="font-semibold">Rs.{totalPrice}</span>
+              <span className="font-semibold">${totalPrice}</span>
             </div>
 
-            {/* <CardElement className="mt-2" onChange={handleChange} /> */}
-            <button
-              onClick={handleCheckout}
-              disabled={!isUserLoggedIn}
-              // disabled={!isUserLoggedIn || processing || disabled || succeeded}
-              className={`py-2 px-3 mt-2 bg-black text-white font-semibold rounded ${
-                // {!isUserLoggedIn && !disabled}
-                !isUserLoggedIn
-                  ? "bg-gray-500 cursor-not-allowed"
-                  : "hover:opacity-80"
-              }`}
-            >
-              {isUserLoggedIn ? "Buy Now" : "Sign in to checkout"}
-              {/* {processing && "Processing..."} */}
-              {/* {succeeded && "Payment Succeeded"} */}
-            </button>
+            {isUserLoggedIn ? (
+              <>
+                <div className="text-red-600 text-base text-center my-2">
+                  **Please use the follwing test credit card for payments**:
+                  <br />
+                  4242-4242-4242-4242 - Exp: 11/2022 - CVV: 123
+                </div>
+                <StripeButton
+                  price={totalPrice}
+                  priceForStripe={totalPrice}
+                  publishableKey="pk_test_fB3yEouOM4K1CJfj1HGRCqil00DdkiLl0b"
+                  onOpenModal={onOpenModal}
+                  user={user}
+                ></StripeButton>
+              </>
+            ) : (
+              <button
+                onClick={redirectToSignIn}
+                className={
+                  "py-2 px-3 mt-2 bg-black text-white font-semibold rounded hover:opacity-80"
+                }
+              >
+                Sign in to checkout
+              </button>
+            )}
           </>
         )}
       </div>
